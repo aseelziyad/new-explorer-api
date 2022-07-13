@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const rateLimit = require("express-rate-limit");
 const { errors, celebrate, Joi } = require('celebrate');
 const cors = require('cors');
+const { limiter } = require('./middleware/limiter');
 const usersRouter = require('./routes/users');
 const articlesRouter = require('./routes/articles');
 const { requestLogger, errorLogger } = require('./middleware/logger');
@@ -11,13 +13,14 @@ const centralErrorHandler = require('./errors/centralErrorHandler');
 const { createUser, login } = require('./controllers/users');
 require('dotenv').config();
 
-const {DB, PORT = 3000 } = process.env;
+const { PORT = 3000 } = process.env;
 
-mongoose.connect(DB);
+mongoose.connect('mongodb://localhost:27017/news-exp');
 
 const app = express();
 app.use(express.json());
 app.use(helmet());
+app.use(limiter);
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
