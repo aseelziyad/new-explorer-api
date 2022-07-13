@@ -1,8 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const rateLimit = require("express-rate-limit");
-const { errors, celebrate, Joi } = require('celebrate');
 const cors = require('cors');
 const { limiter } = require('./middleware/limiter');
 const usersRouter = require('./routes/users');
@@ -10,7 +8,6 @@ const articlesRouter = require('./routes/articles');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const auth = require('./middleware/auth');
 const centralErrorHandler = require('./errors/centralErrorHandler');
-const { createUser, login } = require('./controllers/users');
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
@@ -23,13 +20,13 @@ app.use(helmet());
 app.use(limiter);
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
     return res.status(200).json({});
   }
   next();
@@ -38,7 +35,7 @@ const corsOptions = {
   origin: true,
   credentials: true,
 };
-app.options("*", cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use('/users', auth, usersRouter);
 app.use('/articles', auth, articlesRouter);

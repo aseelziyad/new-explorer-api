@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const rateLimit = require("express-rate-limit");
 
 module.exports.limiter = rateLimit({
