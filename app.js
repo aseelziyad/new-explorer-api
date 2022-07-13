@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
+const { limiter } = require('./middleware/limiter');
 const usersRouter = require('./routes/users');
 const articlesRouter = require('./routes/articles');
 const { requestLogger, errorLogger } = require('./middleware/logger');
@@ -15,6 +16,7 @@ mongoose.connect('mongodb://localhost:27017/news-exp');
 const app = express();
 app.use(express.json());
 app.use(helmet());
+app.use(limiter);
 
 app.use('/users', auth, usersRouter);
 app.use('/articles', auth, articlesRouter);
