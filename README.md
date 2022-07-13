@@ -1,2 +1,2 @@
 # new-explorer-api
-#aseel
+# api //https://api.aseel-explorer.students.nomoredomainssbs.ru/

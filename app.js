@@ -17,6 +17,23 @@ mongoose.connect('mongodb://localhost:27017/news-exp');
 const app = express();
 app.use(express.json());
 app.use(helmet());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }
+  next();
+});
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
+app.options("*", cors(corsOptions));
 
 app.use('/users', auth, usersRouter);
 app.use('/articles', auth, articlesRouter);
