@@ -16,10 +16,10 @@ const app = express();
 mongoose.connect(DB_ADDRESS);
 app.use(express.json());
 app.use(helmet());
-app.use(limiter);
 app.use(cors());
 app.options("*", cors());
 app.use(requestLogger);
+app.use(limiter);
 
 app.post(
   "/signup",
