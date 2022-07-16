@@ -1,5 +1,4 @@
 const { NODE_ENV, SERVER_ADDRESS } = process.env;
-const rateLimit = require("express-rate-limit");
 
 const DB_ADDRESS =
   NODE_ENV === 'production'
@@ -9,8 +8,3 @@ const DB_ADDRESS =
 module.exports = {
   DB_ADDRESS,
 };
-
-module.exports.limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
