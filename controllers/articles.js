@@ -5,9 +5,10 @@ const { ForbiddenError } = require('../errors/errorHandler');
 const { NotFoundError } = require('../errors/errorHandler');
 
 const getArticles = (req, res, next) => {
-  Article.find({})
+  const owner = req.user._id;
+  Article.find({ owner })
     .then((articles) => {
-      res.send({ data: articles });
+      res.send(articles);
     })
     .catch((err) => {
       next(err);
@@ -30,11 +31,10 @@ const deleteArticle = (req, res, next) => {
   Article.findOne({ _id: req.params.articleId })
     .then((article) => {
       if (!article) {
-        throw new NotFoundError();
+        throw new NotFoundError('Article not found');
       }
-      console.log(req.user._id);
       if (!article.owner.equals(req.user._id)) {
-        throw new ForbiddenError();
+        throw new ForbiddenError('Forbidden');
       }
       return Article.findOneAndDelete(req.params.articleId);
     })

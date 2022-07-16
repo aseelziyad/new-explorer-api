@@ -2,25 +2,48 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
+const { celebrate, Joi } = require("celebrate");
 const { limiter } = require('./middleware/limiter');
-const usersRouter = require('./routes/users');
-const articlesRouter = require('./routes/articles');
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const auth = require('./middleware/auth');
+const indexRouter = require("./routes/index");
+const { DB_ADDRESS } = require("./utils/constants");
+const { createUser, login } = require("./controllers/users");
 const centralErrorHandler = require('./errors/centralErrorHandler');
 require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
-
-mongoose.connect('mongodb://localhost:27017/news-exp');
 const app = express();
+mongoose.connect(DB_ADDRESS);
 app.use(express.json());
 app.use(helmet());
 app.use(limiter);
+app.use(cors());
+app.options("*", cors());
+app.use(requestLogger);
 
-app.use('/users', auth, usersRouter);
-app.use('/articles', auth, articlesRouter);
+app.post(
+  "/signup",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(6),
+      name: Joi.string().min(2).max(30),
+    }),
+  }),
+  createUser
+);
+app.post(
+  "/signin",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(6),
+    }),
+  }),
+  login
+);
 
+app.use("/", indexRouter);
 
 app.use(errorLogger);
 app.use((err, req, res, next) => {
