@@ -49,7 +49,6 @@ app.use(errorLogger);
 app.use((err, req, res, next) => {
   centralErrorHandler(err, res);
 });
-
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });
