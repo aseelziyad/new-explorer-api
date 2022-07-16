@@ -1,8 +1,5 @@
 /* eslint-disable func-names */
 const mongoose = require('mongoose');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const validator = require('validator');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const isEmail = require('validator/lib/isEmail');
 const bcrypt = require('bcryptjs');
 const { UnauthorizedError } = require('../errors/errorHandler');
@@ -12,9 +9,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: false,
-    // validate: {
-    //   validator: isEmail,
-    // },
+   validate: {
+     validator: isEmail,
+   },
   },
   password: {
     type: String,
@@ -35,17 +32,18 @@ userSchema.statics.findByCredentails = function (email, password) {
     .select('+password')
     .then((user) => {
       if (!user) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedError('Unauthorized');
       }
          return bcrypt.compare(password, user.password).then((matched) => {
            if (!matched) {
-             throw new UnauthorizedError();
+             throw new UnauthorizedError('Unauthorized');
            }
            return user;
          });
     })
     .catch((err) => {
-    throw new UnauthorizedError();
+       console.log(err);
+    throw new UnauthorizedError('Unauthorized');
   });
 };
 
