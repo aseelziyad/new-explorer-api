@@ -12,7 +12,7 @@ const articleSchema = new mongoose.Schema({
   },
   text: {
     type: String,
-    required: true,
+    optional: true,
   },
   date: {
     type: String,

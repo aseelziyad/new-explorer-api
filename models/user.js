@@ -9,9 +9,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: false,
-   validate: {
-     validator: isEmail,
-   },
+    validate: {
+      validator: isEmail,
+    },
   },
   password: {
     type: String,
@@ -24,6 +24,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
+  },
+  saved: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "article",
+      },
+    ],
+    default: [],
   },
 });
 

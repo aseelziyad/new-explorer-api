@@ -20,13 +20,13 @@ const validateURL = (value, helpers) => {
 router.get('/', auth, getArticles);
 
 router.post(
-  '/',
+  "/",
   auth,
   celebrate({
     body: Joi.object().keys({
       keyword: Joi.string().required(),
       title: Joi.string().required(),
-      text: Joi.string().required(),
+      text: Joi.string().optional().allow(""),
       date: Joi.string().required(),
       source: Joi.string().required(),
       link: Joi.string().required().custom(validateURL),
