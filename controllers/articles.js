@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-shadow */
-const Article = require('../models/article');
-const { ForbiddenError } = require('../errors/errorHandler');
-const { NotFoundError } = require('../errors/errorHandler');
+const Article = require("../models/article");
+const { ForbiddenError } = require("../errors/errorHandler");
+const { NotFoundError } = require("../errors/errorHandler");
 
 const getArticles = (req, res, next) => {
   const owner = req.user._id;
@@ -22,23 +22,27 @@ const createArticle = (req, res, next) => {
     .then((article) => {
       res.send({ data: article });
     })
-    .catch((err) => (
-      next(err)
-  ));
+    .catch((err) =>
+      // next(err)
+      console.log(err)
+    );
 };
 
 const deleteArticle = (req, res, next) => {
   Article.findOne({ _id: req.params.articleId })
     .then((article) => {
       if (!article) {
-        throw new NotFoundError('Article not found');
+        throw new NotFoundError("Article not found");
       }
       if (!article.owner.equals(req.user._id)) {
-        throw new ForbiddenError('Forbidden');
+        throw new ForbiddenError("Forbidden");
       }
-      return Article.findOneAndDelete(req.params.articleId);
+
+      // console.log({ delete: req.params.articleId });
+      return Article.findOneAndDelete({ _id: req.params.articleId });
     })
     .then((deleteArticle) => {
+      console.log({ deleted: deleteArticle._id });
       res.send({ data: deleteArticle });
     })
     .catch((err) => {
